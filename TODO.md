@@ -1,0 +1,8 @@
+- Fix syntax errors in changePassword function (missing closing braces, proper structure)
+- Add check if user exists after finding by id
+- Add error response if old password is incorrect
+- In the else block after confirmPassword check, hash newPassword, update user.password, save user
+- Send email notification using mailsender
+- Return success response
+- Change status code 402 to 400 for validation error
+- Ensure proper indentation and code quality

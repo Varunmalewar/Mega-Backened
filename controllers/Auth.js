@@ -95,7 +95,7 @@ exports.signup = async (req, res) => {
       accountType: accountType,
       approved: approved,
       additionalDetails: profileDetails._id,
-      image: "",
+      image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
     })
 
     return res.status(200).json({

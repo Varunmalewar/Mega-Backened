@@ -9,31 +9,27 @@ const { convertSecondsToDuration } = require("../utils/secToDuration")
 // Method for updating a profile
 exports.updateProfile = async (req, res) => {
   try {
-    const {
-      firstName = "",
-      lastName = "",
-      dateOfBirth = "",
-      about = "",
-      contactNumber = "",
-      gender = "",
-    } = req.body
     const id = req.user.id
 
-    // Find the profile by id
+    // Find the user and profile
     const userDetails = await User.findById(id)
     const profile = await Profile.findById(userDetails.additionalDetails)
 
-    const user = await User.findByIdAndUpdate(id, {
-      firstName,
-      lastName,
-    })
-    await user.save()
+    // Update User fields only if provided
+    const userUpdate = {}
+    if (req.body.firstName !== undefined) userUpdate.firstName = req.body.firstName
+    if (req.body.lastName !== undefined) userUpdate.lastName = req.body.lastName
+    if (Object.keys(userUpdate).length > 0) {
+      await User.findByIdAndUpdate(id, userUpdate, { new: true })
+    }
 
-    // Update the profile fields
-    profile.dateOfBirth = dateOfBirth
-    profile.about = about
-    profile.contactNumber = contactNumber
-    profile.gender = gender
+    // Update Profile fields only if provided
+    if (req.body.firstName !== undefined) profile.firstName = req.body.firstName
+    if (req.body.lastName !== undefined) profile.lastName = req.body.lastName
+    if (req.body.dateOfBirth !== undefined) profile.dateOfBirth = req.body.dateOfBirth
+    if (req.body.about !== undefined) profile.about = req.body.about
+    if (req.body.contactNumber !== undefined) profile.contactNumber = req.body.contactNumber
+    if (req.body.gender !== undefined) profile.gender = req.body.gender
 
     // Save the updated profile
     await profile.save()
@@ -56,11 +52,10 @@ exports.updateProfile = async (req, res) => {
     })
   }
 }
-
 exports.deleteAccount = async (req, res) => {
   try {
     const id = req.user.id
-    console.log(id)
+    console.log("Prinitng id ",id)
     const user = await User.findById({ _id: id })
     if (!user) {
       return res.status(404).json({

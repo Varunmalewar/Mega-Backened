@@ -1,8 +1,8 @@
-- Fix syntax errors in changePassword function (missing closing braces, proper structure)
-- Add check if user exists after finding by id
-- Add error response if old password is incorrect
-- In the else block after confirmPassword check, hash newPassword, update user.password, save user
-- Send email notification using mailsender
-- Return success response
-- Change status code 402 to 400 for validation error
-- Ensure proper indentation and code quality
+# TODO: Fix updateProfile to prevent nullifying fields when partially updating
+
+## Steps:
+1. Modify the updateProfile function in controllers/Profile.js to only update fields that are provided in req.body
+2. For User model (firstName, lastName): Conditionally update only if present in req.body
+3. For Profile model (dateOfBirth, about, contactNumber, gender): Conditionally update only if present in req.body
+4. Test the fix by updating only the "about" field and verify firstName and lastName are not set to null or empty
+5. Verify the updated user details are returned correctly

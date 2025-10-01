@@ -183,6 +183,14 @@ exports.sendotp = async (req, res) => {
   try {
     const { email } = req.body
 
+    // Validate email
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required"
+      })
+    }
+
     // Check if user is already present
     // Find user with provided email
     const checkUserPresent = await User.findOne({ email })
@@ -220,8 +228,12 @@ exports.sendotp = async (req, res) => {
       otp,
     })
   } catch (error) {
-    console.log(error.message)
-    return res.status(500).json({ success: false, error: error.message })
+    console.log("Send OTP Error:", error.message)
+    return res.status(500).json({ 
+      success: false, 
+      message: "Could not send OTP. Please try again.",
+      error: error.message 
+    })
   }
 }
 

@@ -43,7 +43,13 @@ OTPSchema.pre("save", async function (next) {
 
 	// Only send an email when a new document is created
 	if (this.isNew) {
-		await sendVerificationEmail(this.email, this.otp);
+		try {
+			await sendVerificationEmail(this.email, this.otp);
+		} catch (error) {
+			console.error("Failed to send verification email:", error);
+			// Don't throw the error to prevent document save failure
+			// The OTP will still be saved, but email won't be sent
+		}
 	}
 	next();
 });

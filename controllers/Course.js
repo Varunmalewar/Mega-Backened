@@ -39,7 +39,6 @@ exports.createCourse = async (req, res) => {
       !courseDescription ||
       !whatYouWillLearn ||
       !price ||
-      !tag.length ||
       !thumbnail ||
       !category ||
       !instructions.length
@@ -419,11 +418,14 @@ exports.getInstructorCourses = async (req, res) => {
   try {
     // Get the instructor ID from the authenticated user or request body
     const instructorId = req.user.id
+    console.log("Fetching courses for instructor ID:", instructorId)
 
     // Find all courses belonging to the instructor
     const instructorCourses = await Course.find({
       instructor: instructorId,
     }).sort({ createdAt: -1 })
+
+    console.log("Found courses:", instructorCourses.length)
 
     // Return the instructor's courses
     res.status(200).json({
@@ -431,7 +433,7 @@ exports.getInstructorCourses = async (req, res) => {
       data: instructorCourses,
     })
   } catch (error) {
-    console.error(error)
+    console.error("Error in getInstructorCourses:", error)
     res.status(500).json({
       success: false,
       message: "Failed to retrieve instructor courses",

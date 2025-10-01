@@ -77,6 +77,24 @@ router.post("/getCourseDetails", getCourseDetails)
 router.post("/getFullCourseDetails", auth, getFullCourseDetails)
 // Edit Course routes
 router.post("/editCourse", auth, isInstructor, editCourse)
+// Test authentication route
+router.get("/testAuth", auth, (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Authentication working",
+    user: req.user
+  });
+});
+
+// Test instructor authorization route
+router.get("/testInstructor", auth, isInstructor, (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Instructor authorization working",
+    user: req.user
+  });
+});
+
 // Get all Courses Under a Specific Instructor
 router.get("/getInstructorCourses", auth, isInstructor, getInstructorCourses)
 // Delete a Course

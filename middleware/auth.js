@@ -12,10 +12,13 @@ exports.auth = async (req, res, next) => {
 		const token =
 			req.cookies.token ||
 			req.body.token ||
-			req.header("Authorization").replace("Bearer ", "");
+			(req.header("Authorization") && req.header("Authorization").replace("Bearer ", ""));
+
+		console.log("Auth middleware - Token present:", !!token);
 
 		// If JWT is missing, return 401 Unauthorized response
 		if (!token) {
+			console.log("Auth middleware - Token missing");
 			return res.status(401).json({ success: false, message: `Token Missing` });
 		}
 
@@ -78,19 +81,30 @@ exports.isAdmin = async (req, res, next) => {
 };
 exports.isInstructor = async (req, res, next) => {
 	try {
+		console.log("isInstructor middleware - User email:", req.user.email);
 		const userDetails = await User.findOne({ email: req.user.email });
-		console.log(userDetails);
+		console.log("isInstructor middleware - User found:", !!userDetails);
+		console.log("isInstructor middleware - Account type:", userDetails?.accountType);
 
-		console.log(userDetails.accountType);
+		if (!userDetails) {
+			console.log("isInstructor middleware - User not found");
+			return res.status(401).json({
+				success: false,
+				message: "User not found",
+			});
+		}
 
 		if (userDetails.accountType !== "Instructor") {
+			console.log("isInstructor middleware - User is not an instructor");
 			return res.status(401).json({
 				success: false,
 				message: "This is a Protected Route for Instructor",
 			});
 		}
+		console.log("isInstructor middleware - Authorization successful");
 		next();
 	} catch (error) {
+		console.error("isInstructor middleware - Error:", error);
 		return res
 			.status(500)
 			.json({ success: false, message: `User Role Can't be Verified` });

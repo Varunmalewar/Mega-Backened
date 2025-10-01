@@ -17,11 +17,12 @@ const mailSender = async (email, title, body) => {
                 subject: `${title}`,
                 html: `${body}`,
             })
-            console.log(info);
+            console.log("Email sent successfully:", info);
             return info;
     }
     catch(error) {
-        console.log(error.message);
+        console.log("Mail sender error:", error.message);
+        throw error; // Re-throw the error to handle it properly in calling functions
     }
 }
 
